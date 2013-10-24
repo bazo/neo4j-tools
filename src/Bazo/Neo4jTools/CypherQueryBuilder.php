@@ -128,7 +128,7 @@ class CypherQueryBuilder
 	}
 
 
-	public function execute()
+	private function createCypherString()
 	{
 		$cypher = '';
 
@@ -158,6 +158,26 @@ class CypherQueryBuilder
 			$cypher .= 'limit ' . $this->limit . PHP_EOL;
 		}
 
+		return $cypher;
+	}
+
+
+	public function test()
+	{
+		return $this->createCypherString();
+	}
+
+
+	public function __toString()
+	{
+		return $this->createCypherString();
+	}
+
+
+	public function execute()
+	{
+
+		$cypher = $this->createCypherString();
 		$this->processor->setQuery($cypher);
 		$parameters = $this->processor->process();
 
