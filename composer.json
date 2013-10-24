@@ -1,0 +1,27 @@
+{
+	"name": "bazo/neo4j-tools",
+	"type": "library",
+	"description": "Neo4j tools extracted from lphuberdeaus neo4j-php-ogm",
+	"keywords": ["neo4j", "query builder"],
+	"homepage": "https://github.com/bazo/neo4j-tools",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Louis-Philippe Huberdeau",
+			"email": "lphuberdeau@gmail.com",
+			"homepage": "http://lphuberdeau.com"
+		},
+		{
+			"name": "Martin Bažík",
+			"email": "martin@bazo.sk",
+			"homepage": "http://bazo.sk"
+		}
+	],
+	"require": {
+		"php": ">=5.4.0",
+		"everyman/neo4jphp": "@dev"
+	},
+	"autoload": {
+		"psr-0": {"Bazo": "src/"}
+	}
+}
