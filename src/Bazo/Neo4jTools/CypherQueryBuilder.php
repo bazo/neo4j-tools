@@ -167,9 +167,13 @@ class CypherQueryBuilder
 		$cypher = $this->createCypherString();
 		$this->processor->setQuery($cypher);
 		$parameters = $this->processor->process();
+		$mask = '{%s}';
 		
 		foreach($parameters as $parameter => $value) {
-			$cypher = str_replace(sprintf('{%s}', $parameter), $value, $cypher);
+			if(is_string($value)) {
+				$value = '"'.$value.'"';
+			}
+			$cypher = str_replace(sprintf($mask, $parameter), $value, $cypher);
 		}
 		echo $cypher;
 	}
