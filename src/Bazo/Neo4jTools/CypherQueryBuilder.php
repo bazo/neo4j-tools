@@ -164,7 +164,14 @@ class CypherQueryBuilder
 
 	public function test()
 	{
-		return $this->createCypherString();
+		$cypher = $this->createCypherString();
+		$this->processor->setQuery($cypher);
+		$parameters = $this->processor->process();
+		
+		foreach($parameters as $parameter => $value) {
+			$cypher = str_replace(sprintf('{%s}', $parameter), $value, $cypher);
+		}
+		echo $cypher;
 	}
 
 
