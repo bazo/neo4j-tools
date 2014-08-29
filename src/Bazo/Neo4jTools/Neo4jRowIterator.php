@@ -9,7 +9,7 @@ use Everyman\Neo4j\Query\ResultSet;
 /**
  * @author Martin Bažík <martin@bazo.sk>
  */
-class Neo4jRowIterator implements Iterator
+class Neo4jRowIterator implements \Iterator
 {
 
 	/** @var ResultSet */
