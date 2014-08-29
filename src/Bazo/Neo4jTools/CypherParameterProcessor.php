@@ -5,8 +5,11 @@ namespace Bazo\Neo4jTools;
 class CypherParameterProcessor
 {
 
+	/** @var string */
 	private $query;
-	private $parameters = array();
+
+	/** @var array */
+	private $parameters = [];
 
 
 	public function setQuery($string)
@@ -52,4 +55,3 @@ class CypherParameterProcessor
 
 
 }
-

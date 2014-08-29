@@ -4,15 +4,15 @@ namespace Bazo\Neo4jTools;
 
 use Everyman\Neo4j\Query\ResultSet;
 
+
+
 /**
- * Neo4jRowIterator
- *
  * @author Martin Bažík <martin@bazo.sk>
  */
-class Neo4jRowIterator implements \Iterator
+class Neo4jRowIterator implements Iterator
 {
 
-	/** @var \Everyman\Neo4j\Query\ResultSet */
+	/** @var ResultSet */
 	private $resultSet;
 
 
@@ -54,4 +54,3 @@ class Neo4jRowIterator implements \Iterator
 
 
 }
-

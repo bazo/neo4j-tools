@@ -3,6 +3,8 @@
 namespace Bazo\Neo4jTools;
 
 use Everyman\Neo4j\Client;
+use Everyman\Neo4j\Cypher\Query;
+use Everyman\Neo4j\Query\ResultSet;
 
 
 
@@ -14,14 +16,32 @@ class CypherQueryBuilder
 
 	/** @var Client */
 	private $client;
+
+	/** @var array */
 	private $start = [];
+
+	/** @var array */
 	private $match = [];
+
+	/** @var array */
 	private $delete = [];
+
+	/** @var array */
 	private $return = [];
+
+	/** @var array */
 	private $where = [];
+
+	/** @var array */
 	private $order = [];
+
+	/** @var int */
 	private $skip;
+
+	/** @var int */
 	private $limit;
+
+	/** @var CypherParameterProcessor */
 	private $processor;
 
 
@@ -32,6 +52,10 @@ class CypherQueryBuilder
 	}
 
 
+	/**
+	 * @param string $string
+	 * @return CypherQueryBuilder
+	 */
 	public function start($string)
 	{
 		$this->start = array_merge($this->start, func_get_args());
@@ -39,6 +63,11 @@ class CypherQueryBuilder
 	}
 
 
+	/**
+	 * @param string $name
+	 * @param mixed $nodes
+	 * @return CypherQueryBuilder
+	 */
 	public function startWithNode($name, $nodes)
 	{
 		if (!is_array($nodes)) {
@@ -60,6 +89,12 @@ class CypherQueryBuilder
 	}
 
 
+	/**
+	 * @param string $name
+	 * @param string $index
+	 * @param string $query
+	 * @return CypherQueryBuilder
+	 */
 	public function startWithQuery($name, $index, $query)
 	{
 		$this->start("$name = node:`$index`('$query')");
@@ -68,6 +103,13 @@ class CypherQueryBuilder
 	}
 
 
+	/**
+	 * @param string $name
+	 * @param string $index
+	 * @param string $key
+	 * @param mixed $value
+	 * @return CypherQueryBuilder
+	 */
 	public function startWithLookup($name, $index, $key, $value)
 	{
 		$this->start("$name = node:`$index`($key = :{$name}_{$key})");
@@ -77,6 +119,10 @@ class CypherQueryBuilder
 	}
 
 
+	/**
+	 * @param string $string
+	 * @return CypherQueryBuilder
+	 */
 	public function match($string)
 	{
 		$this->match = array_merge($this->match, func_get_args());
@@ -84,6 +130,10 @@ class CypherQueryBuilder
 	}
 
 
+	/**
+	 * @param string $string
+	 * @return CypherQueryBuilder
+	 */
 	public function end($string)
 	{
 		$this->return = array_merge($this->return, func_get_args());
@@ -91,6 +141,10 @@ class CypherQueryBuilder
 	}
 
 
+	/**
+	 * @param string $string
+	 * @return CypherQueryBuilder
+	 */
 	public function where($string)
 	{
 		$this->where = array_merge($this->where, func_get_args());
@@ -98,6 +152,21 @@ class CypherQueryBuilder
 	}
 
 
+	/**
+	 * @param string $string
+	 * @return CypherQueryBuilder
+	 */
+	public function delete($string)
+	{
+		$this->delete = array_merge($this->delete, func_get_args());
+		return $this;
+	}
+
+
+	/**
+	 * @param string $string
+	 * @return CypherQueryBuilder
+	 */
 	public function order($string)
 	{
 		$this->order = array_merge($this->order, func_get_args());
@@ -105,6 +174,10 @@ class CypherQueryBuilder
 	}
 
 
+	/**
+	 * @param int $skip
+	 * @return CypherQueryBuilder
+	 */
 	public function skip($skip)
 	{
 		$this->skip = (int) $skip;
@@ -112,6 +185,10 @@ class CypherQueryBuilder
 	}
 
 
+	/**
+	 * @param int $limit
+	 * @return CypherQueryBuilder
+	 */
 	public function limit($limit)
 	{
 		$this->limit = (int) $limit;
@@ -119,6 +196,11 @@ class CypherQueryBuilder
 	}
 
 
+	/**
+	 * @param string $name
+	 * @param mixed $value
+	 * @return CypherQueryBuilder
+	 */
 	public function set($name, $value)
 	{
 		$this->processor->setParameter($name, $value);
@@ -127,6 +209,9 @@ class CypherQueryBuilder
 	}
 
 
+	/**
+	 * @return string
+	 */
 	private function createCypherString()
 	{
 		$cypher = '';
@@ -190,14 +275,16 @@ class CypherQueryBuilder
 	}
 
 
+	/**
+	 * @return ResultSet
+	 */
 	public function execute()
 	{
-
 		$cypher = $this->createCypherString();
 		$this->processor->setQuery($cypher);
 		$parameters = $this->processor->process();
 
-		$query = new \Everyman\Neo4j\Cypher\Query($this->client, $cypher, $parameters);
+		$query = new Query($this->client, $cypher, $parameters);
 		return $query->getResultSet();
 	}
 
