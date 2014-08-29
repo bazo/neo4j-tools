@@ -12,7 +12,7 @@ use Everyman\Neo4j\Query\ResultSet;
 class Neo4jRowIterator implements \Iterator
 {
 
-	/** @var Everyman\Neo4j\Query\ResultSet */
+	/** @var \Everyman\Neo4j\Query\ResultSet */
 	private $resultSet;
 
 

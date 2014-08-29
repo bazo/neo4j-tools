@@ -2,13 +2,11 @@
 
 namespace Bazo\Neo4jTools;
 
-use Everyman\Neo4j\Node;
-use Everyman\Neo4j\Path;
 use Everyman\Neo4j\Client;
 
+
+
 /**
- * CypherQueryBuilder
- *
  * @author Martin Bažík <martin@bazo.sk>
  */
 class CypherQueryBuilder
@@ -16,11 +14,12 @@ class CypherQueryBuilder
 
 	/** @var Client */
 	private $client;
-	private $start = array();
-	private $match = array();
-	private $return = array();
-	private $where = array();
-	private $order = array();
+	private $start = [];
+	private $match = [];
+	private $delete = [];
+	private $return = [];
+	private $where = [];
+	private $order = [];
 	private $skip;
 	private $limit;
 	private $processor;
@@ -46,7 +45,7 @@ class CypherQueryBuilder
 			$nodes = array($nodes);
 		}
 
-		$parts = array();
+		$parts = [];
 		foreach ($nodes as $key => $node) {
 			$fullKey = $name . '_' . $key;
 
@@ -133,29 +132,35 @@ class CypherQueryBuilder
 		$cypher = '';
 
 		if ($this->start) {
-			$cypher .= 'start ' . implode(', ', $this->start) . PHP_EOL;
+			$cypher .= 'START ' . implode(', ', $this->start) . PHP_EOL;
 		}
 
 		if (count($this->match)) {
-			$cypher .= 'match ' . implode(', ', $this->match) . PHP_EOL;
+			$cypher .= 'MATCH ' . implode(', ', $this->match) . PHP_EOL;
 		}
 
 		if (count($this->where)) {
-			$cypher .= 'where (' . implode(') AND (', $this->where) . ')' . PHP_EOL;
+			$cypher .= 'WHERE (' . implode(') AND (', $this->where) . ')' . PHP_EOL;
 		}
 
-		$cypher .= 'return ' . implode(', ', $this->return) . PHP_EOL;
+		if (count($this->delete)) {
+			$cypher .= 'DELETE ' . implode(', ', $this->delete) . PHP_EOL;
+		}
+
+		if (count($this->return)) {
+			$cypher .= 'RETURN ' . implode(', ', $this->return) . PHP_EOL;
+		}
 
 		if (count($this->order)) {
-			$cypher .= 'order by ' . implode(', ', $this->order) . PHP_EOL;
+			$cypher .= 'ORDER BY ' . implode(', ', $this->order) . PHP_EOL;
 		}
 
 		if ($this->skip) {
-			$cypher .= 'skip ' . $this->skip . PHP_EOL;
+			$cypher .= 'SKIP ' . $this->skip . PHP_EOL;
 		}
 
 		if ($this->limit) {
-			$cypher .= 'limit ' . $this->limit . PHP_EOL;
+			$cypher .= 'LIMIT ' . $this->limit . PHP_EOL;
 		}
 
 		return $cypher;
@@ -168,10 +173,10 @@ class CypherQueryBuilder
 		$this->processor->setQuery($cypher);
 		$parameters = $this->processor->process();
 		$mask = '{%s}';
-		
-		foreach($parameters as $parameter => $value) {
-			if(is_string($value)) {
-				$value = '"'.$value.'"';
+
+		foreach ($parameters as $parameter => $value) {
+			if (is_string($value)) {
+				$value = '"' . $value . '"';
 			}
 			$cypher = str_replace(sprintf($mask, $parameter), $value, $cypher);
 		}
@@ -198,4 +203,3 @@ class CypherQueryBuilder
 
 
 }
-
