@@ -276,16 +276,26 @@ class CypherQueryBuilder
 
 
 	/**
+	 * @param string $cypher
 	 * @return ResultSet
 	 */
-	public function execute()
+	public function rawQuery($cypher)
 	{
-		$cypher = $this->createCypherString();
 		$this->processor->setQuery($cypher);
 		$parameters = $this->processor->process();
 
 		$query = new Query($this->client, $cypher, $parameters);
 		return $query->getResultSet();
+	}
+
+
+	/**
+	 * @return ResultSet
+	 */
+	public function execute()
+	{
+		$cypher = $this->createCypherString();
+		return $this->rawQuery($cypher);
 	}
 
 
