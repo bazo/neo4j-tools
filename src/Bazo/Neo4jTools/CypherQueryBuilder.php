@@ -209,6 +209,14 @@ class CypherQueryBuilder
 	}
 
 
+	public function setParams($name, $value)
+	{
+		$this->processor->setParameter($name, $value);
+
+		return $this;
+	}
+
+
 	/**
 	 * @return string
 	 */
