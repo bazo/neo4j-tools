@@ -34,6 +34,12 @@ class CypherParameterProcessor
 	}
 
 
+	public function setParameters($parameters)
+	{
+		$this->parameters = $parameters;
+	}
+
+
 	public function process()
 	{
 		$parameters = $this->parameters;
