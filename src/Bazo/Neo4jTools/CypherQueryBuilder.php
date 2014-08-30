@@ -44,6 +44,9 @@ class CypherQueryBuilder
 	/** @var CypherParameterProcessor */
 	private $processor;
 
+	/** @var string */
+	private $cypher;
+
 
 	public function __construct(Client $client)
 	{
@@ -262,6 +265,12 @@ class CypherQueryBuilder
 
 	public function test()
 	{
+		echo $this;
+	}
+
+
+	public function __toString()
+	{
 		$cypher = $this->createCypherString();
 		$this->processor->setQuery($cypher);
 		$parameters = $this->processor->process();
@@ -273,13 +282,7 @@ class CypherQueryBuilder
 			}
 			$cypher = str_replace(sprintf($mask, $parameter), $value, $cypher);
 		}
-		echo $cypher;
-	}
-
-
-	public function __toString()
-	{
-		return $this->createCypherString();
+		return $cypher;
 	}
 
 
@@ -289,11 +292,8 @@ class CypherQueryBuilder
 	 */
 	public function rawQuery($cypher)
 	{
-		$this->processor->setQuery($cypher);
-		$parameters = $this->processor->process();
-
-		$query = new Query($this->client, $cypher, $parameters);
-		return $query->getResultSet();
+		$this->cypher = $cypher;
+		return $this;
 	}
 
 
@@ -302,8 +302,12 @@ class CypherQueryBuilder
 	 */
 	public function execute()
 	{
-		$cypher = $this->createCypherString();
-		return $this->rawQuery($cypher);
+		$cypher = is_null($this->cypher) ? $this->createCypherString() : $this->cypher;
+		$this->processor->setQuery($cypher);
+		$parameters = $this->processor->process();
+
+		$query = new Query($this->client, $cypher, $parameters);
+		return $query->getResultSet();
 	}
 
 
