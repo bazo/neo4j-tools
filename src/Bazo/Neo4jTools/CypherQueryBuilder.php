@@ -271,7 +271,7 @@ class CypherQueryBuilder
 
 	public function __toString()
 	{
-		$cypher = $this->createCypherString();
+		$cypher = $this->getCypher();
 		$this->processor->setQuery($cypher);
 		$parameters = $this->processor->process();
 		$mask = '{%s}';
@@ -297,12 +297,18 @@ class CypherQueryBuilder
 	}
 
 
+	private function getCypher()
+	{
+		return is_null($this->cypher) ? $this->createCypherString() : $this->cypher;
+	}
+
+
 	/**
 	 * @return ResultSet
 	 */
 	public function execute()
 	{
-		$cypher = is_null($this->cypher) ? $this->createCypherString() : $this->cypher;
+		$cypher = $this->getCypher();
 		$this->processor->setQuery($cypher);
 		$parameters = $this->processor->process();
 
