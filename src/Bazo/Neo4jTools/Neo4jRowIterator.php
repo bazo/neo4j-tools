@@ -13,7 +13,7 @@ class Neo4jRowIterator implements \Iterator
 {
 
 	/** @var ResultSet */
-	private $resultSet;
+	protected $resultSet;
 
 
 	function __construct(ResultSet $resultSet)
